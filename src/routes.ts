@@ -1,29 +1,38 @@
 import { Router, Request, Response } from "express";
-import pool from "./db";
+import {
+  eatersIndex,
+  eatersByName,
+  availableRestaraunts,
+  restrictionsByEaterNames,
+  createReservation
+} from "./controllers";
 
 const router = Router();
 
-interface Todo {
-  id: number;
-  name: string;
-}
-
-// This route handles requests to the root path '/'
+// Root Route
 router.get("/", (req: Request, res: Response) => {
-  res.send("Welcome to the To-Do List App!");
+  res.send("Hello!");
 });
 
-// This route gets all tasks
+// Eaters
 router.get("/eaters", async (req: Request, res: Response) => {
-  try {
-    console.log(pool)
-    const result = await pool.query("SELECT * FROM eater");
-    const todos: Todo[] = result.rows;
-    res.json(todos);
-  } catch (error) {
-    console.error("Error fetching todos", error);
-    res.status(500).json({ error: "Error fetching todos" });
-  }
+  eatersIndex(req, res);
+});
+
+router.get("/eaters-by-name", async (req: Request, res: Response) => {
+  eatersByName(req, res);
+});
+
+router.get("/restrictions-by-name", async (req: Request, res: Response) => {
+  restrictionsByEaterNames(req, res);
+});
+
+router.get("/available-restaurants", async (req: Request, res: Response) => {
+  availableRestaraunts(req, res);
+});
+
+router.post("/reservations", async (req: Request, res: Response) => {
+  createReservation(req, res);
 });
 
 export default router;
