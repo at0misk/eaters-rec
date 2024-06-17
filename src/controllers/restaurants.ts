@@ -26,12 +26,13 @@ export async function availableRestaraunts(req: Request, res: Response) {
     );
     const reservations: Reservation[] = reservationResult.rows
 
+    let errors = [];
+    let records = [];
+
     // If they do, return the reservations with an error
     if (reservations.length > 0) {
-      res.json({
-        'error': 'Requested eaters have conflicting reservations',
-        reservations
-      });
+      errors.push('Requested eaters have conflicting reservations')
+      records.push(reservations);
     }
 
     // Look up dietary restrictions for eaters
@@ -52,12 +53,14 @@ export async function availableRestaraunts(req: Request, res: Response) {
 
     // Return error if no restaurants found
     if (restaurants.length < 1) {
-      res.json({
-        'error': 'No restaurants matched the dietary restrictions or capacity'
-      })
+      errors.push('No restaurants matched the dietary restrictions or capacity')
     }
 
-    res.json(restaurants);
+    if (errors.length === 0) {
+      records.push(restaurants)
+    }
+
+    res.json({ records, errors });
   } catch (error) {
     console.error("Error fetching eaters", error);
     res.status(500).json({ error: "Error fetching restaurants" });

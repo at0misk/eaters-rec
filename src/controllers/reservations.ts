@@ -22,10 +22,11 @@ export async function createReservation(req: Request, res: Response) {
     const restaurantResult = await pool.query(FIND_RESTAURANT_BY_NAME, [restaurantName]);
     const restaurant: Restaurant = restaurantResult.rows[0];
 
+    let errors = [];
+    let records = [];
+
     if (!restaurant) {
-      res.json({
-        'error': `No restaurant found for name ${restaurantName}`
-      })
+      errors.push(`No restaurant found for name ${restaurantName}`);
     }
 
     // Create reservation
@@ -36,9 +37,7 @@ export async function createReservation(req: Request, res: Response) {
     const reservation: Reservation = reservationResult.rows[0]
 
     if (!reservation) {
-      res.json({
-        'error': `Reservation records could not be created`
-      })
+      errors.push(`Reservation records could not be created`);
     }
 
     // Create eaters reservations
@@ -49,13 +48,15 @@ export async function createReservation(req: Request, res: Response) {
       )
 
       if (eatersReservationsResult.rows.length === 0) {
-        res.json({
-          'error': `Eaters reservations records could not be created`
-        })
+        errors.push(`Eaters reservations records could not be created`);
       }
     }
 
-    res.json(reservation);
+    if (errors.length === 0) {
+      records.push(reservation)
+    }
+
+    res.json({ records, errors });
   } catch (error) {
     console.error("Error fetching eaters", error);
     res.status(500).json({ error: "Error creating reservation" });
