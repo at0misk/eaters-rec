@@ -9,7 +9,7 @@ To start the project please run `npm run dev`
 ## Postgres
 I used a hosted Postgres instance and populated the database with the data from the Google sheet.
 
-The values for the connection string are hard coded into the application - there should be no additional set up to connect to it.
+The values for the connection string are hard coded into the application - there should be no additional set up to connect to it, however if you encounter any difficulties please reach out to me.
 
 The following is an ERD diagram of the database schema:
 ![Screenshot 2024-06-17 at 10 16 18 AM](https://github.com/at0misk/eaters-rec/assets/17558214/e6ec33eb-8df8-4416-b13a-1a8770373260)
